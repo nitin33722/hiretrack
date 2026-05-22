@@ -1,6 +1,6 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Literal
-
+from datetime import datetime
 class UserRegister(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8),
@@ -21,7 +21,8 @@ class UserOut(BaseModel):
     email:EmailStr
     full_name: str
     role: str
-    create_at: str
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
 
 class TokenPayload(BaseModel):
     sub: str

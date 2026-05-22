@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from app.core.database import get_db, engine, Base
 from app.core.config import settings
-from app.core.sercurity import (hash_password, verify_password, create_access_token, decode_token)
+from app.core.security import (hash_password, verify_password, create_access_token, decode_token)
 from app.models import User
 from app.schemas import (
     UserLogin,
@@ -12,7 +12,8 @@ from app.schemas import (
     TokenResponse,
     VerifyTokenResponse
 )
-Base.metadata.crete_all(bind=engine)
+from app.core.logger import logger
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title = "AuthService",
@@ -47,13 +48,13 @@ async def register(
             detail="Email already registered"
         )
     hashed_pwd = hash_password(user_data.password)
-
     new_user = User(
         email=user_data.email,
         hashed_password=hashed_pwd,
         full_name=user_data.full_name,
         role=user_data.role
     )
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -102,7 +103,7 @@ def verify_internal_secret(internal_secret:str = None) -> bool:
     if internal_secret!=settings.INTERNAL_SECRET:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detai = "Unauthorized"
+            detail = "Unauthorized"
         )
     return True
 

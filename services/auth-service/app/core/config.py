@@ -10,7 +10,7 @@ class Settings(BaseSettings):
 
     INTERNAL_SECRET : str
 
-    ENVIRONMENT = Literal["development","staging","production"] = "development"
+    ENVIRONMENT : Literal["development","staging","production"] = "development"
     
     class Config:
         env_file = ".env"
