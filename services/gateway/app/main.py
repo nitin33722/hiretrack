@@ -33,8 +33,9 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # Vite dev server
-        "http://localhost:3000",  # React dev server
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -137,18 +138,15 @@ async def proxy(request: Request, full_path: str):
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
             if "multipart/form-data" in content_type:
-                # For file uploads, read form data and forward as multipart
                 form_data = await request.form()
                 files = {}
                 data = {}
                 
                 for key, value in form_data.items():
                     if hasattr(value, "read"):
-                        # It's a file
                         file_bytes = await value.read()
                         files[key] = (value.filename, file_bytes, value.content_type)
                     else:
-                        # It's a regular form field
                         data[key] = value
                 
                 response = await client.request(
