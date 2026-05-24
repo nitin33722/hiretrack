@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPBasicCredentials
 from app.core.auth import auth_client
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
 async def get_current_user(credentials: HTTPBasicCredentials = Depends(security)) -> dict:
     token = credentials.credentials

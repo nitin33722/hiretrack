@@ -47,7 +47,7 @@ async def upload_file(
             detail=f"File size exceeds limit of {settings.MAX_FILE_SIZE_MB}MB"
         )
     storage = get_storage_backend()
-    result = await storage.save(file_bytes, file.filename)
+    result = await storage.save(file_bytes = file_bytes, original_filename=file.filename)
     
     return FileUploadResponse(
         file_id=result["file_id"],

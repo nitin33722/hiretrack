@@ -3,7 +3,7 @@ from typing import Optional
 
 class FileUploadResponse(BaseModel):
     file_id:str
-    file_name:str
+    filename:str
     url:str
     size_bytes:int
 

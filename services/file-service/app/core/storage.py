@@ -55,7 +55,7 @@ class LocalStorageBackend(StorageBackend):
 
 def get_storage_backend() -> StorageBackend:
     if settings.STORAGE_BACKEND == "local":
-        return LocalStorageBackend
+        return LocalStorageBackend()
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail = "storage backend not defined"

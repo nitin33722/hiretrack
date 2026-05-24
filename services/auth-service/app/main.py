@@ -12,7 +12,13 @@ from app.schemas import (
     TokenResponse,
     VerifyTokenResponse
 )
+from pydantic import BaseModel
 from app.core.logger import logger
+
+class VerifyTokenRequest(BaseModel):
+    token: str
+    internal_secret: str
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -108,18 +114,24 @@ def verify_internal_secret(internal_secret:str = None) -> bool:
     return True
 
 @app.post("/auth/verify-token")
-async def verfify_token(
-    token:str,
-    internal_secret:str = None,
+async def verify_token(
+    request: VerifyTokenRequest,
     db: Session = Depends(get_db)
 ):
-    verify_internal_secret(internal_secret)
+    """
+    Verify a JWT and return user information.
+    Called by other services to validate tokens.
+    """
+    verify_internal_secret(request.internal_secret)
+    
     try:
-        payload = decode_token(token)
+        payload = decode_token(request.token)
+        
         user_id = int(payload.get("sub"))
         role = payload.get("role")
         email = payload.get("email")
         
+        # Verify user still exists in database
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
             return VerifyTokenResponse(valid=False)
@@ -130,9 +142,8 @@ async def verfify_token(
             role=role,
             email=email
         )
-
     except Exception:
-        return VerifyTokenResponse(valid = False)
+        return VerifyTokenResponse(valid=False)
 
 @app.get("/auth/users/{user_id}")
 async def get_user(
