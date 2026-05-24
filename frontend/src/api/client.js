@@ -2,7 +2,10 @@ import axios from 'axios'
 
 const client = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  decompress: true
+  headers: {
+    'Accept-Encoding': 'identity',  // Tell server: don't compress
+  },
+  decompress: true,  // Decompress if it does
 })
 
 // Request interceptor — attach JWT to every request
