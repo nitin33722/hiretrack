@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     JOB_SERVICE_URL: str = "http://localhost:8002"
     APPLICATION_SERVICE_URL: str = "http://localhost:8003"
     FILE_SERVICE_URL: str = "http://localhost:8004"
-    
+    ALLOWED_ORIGINS: list[str]
     # Environment
     ENVIRONMENT: Literal["development", "staging", "production"] = "development"
     

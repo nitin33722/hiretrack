@@ -1,0 +1,8 @@
+services:
+  - type: static_site
+    name: hiretrack-frontend
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://hiretrack-gateway.onrender.com
