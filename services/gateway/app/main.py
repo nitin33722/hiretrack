@@ -174,9 +174,18 @@ async def proxy(request: Request, full_path: str):
         response_headers = dict(response.headers)
         response_headers.pop("content-encoding", None)
         response_headers.pop("transfer-encoding", None)
+
+# Ensure content is decompressed
+        import gzip
+        content = response.content
+        try:
+            if response_headers.get("content-encoding") == "gzip" or content.startswith(b'\x1f\x8b'):
+                content = gzip.decompress(content)
+        except:
+            pass  # Not compressed, use as-is
         
         return Response(
-            content=response.content,
+            content=content,
             status_code=response.status_code,
             headers=response_headers,
             media_type=response.headers.get("content-type")
