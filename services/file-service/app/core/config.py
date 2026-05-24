@@ -8,7 +8,10 @@ class Settings(BaseSettings):
     MAX_FILE_SIZE_MB: int = 5
     ALLOWED_MIME_TYPES:str = "application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ENVIRONMENT: Literal["development", "production", "staging"] = "development"
-
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
+    AWS_S3_BUCKET: str = "hiretrack-uploads"
+    AWS_S3_REGION: str = "ap-south-1"
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
     
     @property
